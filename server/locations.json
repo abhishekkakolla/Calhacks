@@ -1,0 +1,16 @@
+[
+    {
+        "_id": "671522270d72de302a615aa6",
+        "title": "A",
+        "description": "test",
+        "longitude": -122.4014014,
+        "latitude": 37.782969
+    },
+    {
+        "_id": "671522370d72de302a615aa7",
+        "title": "B",
+        "description": "test",
+        "longitude": -122.4014014,
+        "latitude": 37.782969
+    }
+]

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AR.js with A-Frame (Location-Based)</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script>
+        // Function to place the entity at the user's location
+        function placeAtLocation(lat, lon) {
+            const position = calculatePosition(lat, lon);
+            const entity = document.querySelector('#myEntity');
+            entity.setAttribute('position', position);
+        }
+
+        // Convert latitude and longitude to A-Frame coordinates
+        function calculatePosition(lat, lon) {
+            const earthRadius = 6378137; // in meters
+            const x = earthRadius * lon * Math.PI / 180;
+            const y = earthRadius * Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360));
+            return `${x} ${y} 0`; // Y position can be adjusted based on your needs
+        }
+
+        // Get user's current location
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    placeAtLocation(lat, lon);
+                }, () => {
+                    console.error("Geolocation is not enabled or available.");
+                });
+            } else {
+                console.error("Geolocation is not supported by this browser.");
+            }
+        }
+
+        window.onload = getLocation; // Call the function on load
+    </script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs>
+        <!-- Load your 3D model -->
+        <a-entity id="myEntity" 
+                  gltf-model="url(https://drive.google.com/uc?export=download&id=1CmJxe7phFgfyh0oJeQFv6cpY8t_3m7Kg)" 
+                  scale="0.5 0.5 0.5">
+        </a-entity>
+
+        <!-- Create a text entity -->
+        <a-entity 
+            id="myText" 
+            text="value: Your Text Here; color: #FFF; align: center;" 
+            position="0 1.5 0" 
+            scale="2 2 2">
+        </a-entity>
+
+        <!-- Add a camera -->
+        <a-entity camera></a-entity>
+    </a-scene>
+</body>
+</html>

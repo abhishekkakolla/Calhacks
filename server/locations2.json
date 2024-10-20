@@ -1,0 +1,20 @@
+[
+    {
+        "title": "Location A",
+        "description": "This is Location A",
+        "longitude": -122.403188,
+        "latitude": 37.785109
+    },
+    {
+        "title": "Location B",
+        "description": "This is Location B",
+        "longitude": -122.401702,
+        "latitude": 37.784365
+    },
+    {
+        "title": "Location C",
+        "description": "This is Location C",
+        "longitude": -122.404702,
+        "latitude": 37.789365
+    }
+]
