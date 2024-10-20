@@ -34,8 +34,8 @@ export default function Home() {
       <main className="flex-grow flex flex-col items-center justify-center text-center p-4">
         <h1 className="text-5xl font-bold mb-6 text-black">Welcome to Mantis</h1>
         <img src="/transparentMantisLogo.png" alt="Splash Logo" className="w-48 h-48 mb-8" /> {/* Logo from public folder */}
-        <p className="text-lg mb-6 text-black">
-          Quote Placeholder
+        <p className="text-lg mb-6 text-black italic">
+          Like the mantis, we see beyond the obvious–enhancing the world around us, one sign at a time.
         </p>
 
         {/* Call to Action: Become an Organizer */}

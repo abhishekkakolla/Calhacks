@@ -1,5 +1,5 @@
-
 "use client";
+
 import Link from 'next/link';
 import React, { useState } from 'react';
 
@@ -12,39 +12,48 @@ export default function SignForm() {
   const [currentSignIndex, setCurrentSignIndex] = useState(null); // Index of the sign being edited
 
   // Handle form submission (add or update sign)
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Log the values of the input fields to the console
-    console.log("Sign Title: ", title);
-    console.log("Sign Description: ", description);
-    console.log("Location: ", `Longitude: ${longitude}, Latitude: ${latitude}`);
-
+  
     const newSign = {
       title: title,
       description: description,
-      location: {
-        longitude: longitude,
-        latitude: latitude,
-      },
+      longitude: longitude,
+      latitude: latitude,
     };
-
+  
+    // Add the sign locally first (so it shows up in the sidebar)
     if (currentSignIndex !== null) {
-      // Update existing sign
       const updatedSigns = [...signs];
-      updatedSigns[currentSignIndex] = newSign;
+      updatedSigns[currentSignIndex] = newSign; // Update existing sign
       setSigns(updatedSigns);
     } else {
-      // Add new sign
-      setSigns([...signs, newSign]);
+      setSigns([...signs, newSign]); // Add new sign
     }
-
-    // Clear form and reset current sign index
+  
+    // Clear form fields after adding/updating
     setTitle('');
     setDescription('');
     setLongitude('');
     setLatitude('');
-    setCurrentSignIndex(null);
+    setCurrentSignIndex(null); // Reset index to indicate a new sign should be created
+  
+    // Now send the data to the backend (optional, only if needed)
+    try {
+      const response = await fetch('http://localhost:3000/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newSign),
+      });
+  
+      if (!response.ok) {
+        console.error('Error adding sign:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error sending sign data:', error);
+    }
   };
 
   // Get the user's location using the Geolocation API
@@ -66,6 +75,16 @@ export default function SignForm() {
     }
   };
 
+  // Handle editing a sign (populate the form with the selected sign's data)
+  const handleEditSign = (index) => {
+    const signToEdit = signs[index];
+    setTitle(signToEdit.title); // Set the title in the form
+    setDescription(signToEdit.description); // Set the description in the form
+    setLongitude(signToEdit.longitude); // Set longitude in the form
+    setLatitude(signToEdit.latitude); // Set latitude in the form
+    setCurrentSignIndex(index); // Set the index of the sign being edited
+  };
+
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -79,7 +98,7 @@ export default function SignForm() {
               <li key={index}>
                 <button
                   className="bg-gray-600 w-full text-left px-3 py-2 rounded hover:bg-gray-700 transition"
-                  onClick={() => handleEditSign(index)}
+                  onClick={() => handleEditSign(index)} // Call the edit function
                 >
                   {sign.title}
                 </button>
@@ -92,7 +111,7 @@ export default function SignForm() {
       {/* Main Content Area */}
       <div className="w-3/4 p-6">
         <h1 className="text-3xl text-white font-bold mb-8">
-          {currentSignIndex !== null ? 'Edit Sign' : 'Add New Sign'}
+          {currentSignIndex !== null ? 'Edit Sign' : 'Create New Sign'}
         </h1>
 
         {/* Sign Form */}
@@ -129,7 +148,7 @@ export default function SignForm() {
             <button
               type="button"
               onClick={handleGetLocation}
-              className="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors"
+              className="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors"
             >
               Get Location
             </button>
@@ -142,24 +161,18 @@ export default function SignForm() {
           >
             {currentSignIndex !== null ? 'Update Sign' : 'Add Sign'}
           </button>
-
-          
-
-          
         </form>
 
         <div className="flex justify-center">
           <Link href="/">
             <button
-                type="button"
-                className="w-1/10 bg-red-400 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors"
+              type="button"
+              className="w-1/10 bg-red-400 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors mt-20"
             >
-                Logout
+              Logout
             </button>
-            </Link>
-
-          </div>
-
+          </Link>
+        </div>
       </div>
     </div>
   );
